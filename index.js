@@ -34,12 +34,12 @@ client.on("messageCreate", async (message) => {
     let nowDate = koreaTime.toISOString().slice(0, 11);
 
     try {
-        let data = await fetchMenu(dateStr, restaurant, Number(isTomorrow));
+        let data = await fetchMenu(dateStr, restaurant, Number(isTomorrow), nowTime);
         let msg = "";
 
         if (parts[0] === "메뉴추천") {
             let isR5 = restaurant && restaurant === 'r5';
-            let data2 = await fetchMenu(dateStr, isR5 ? "r4" : "r5" , Number(isTomorrow));
+            let data2 = await fetchMenu(dateStr, isR5 ? "r4" : "r5" , Number(isTomorrow), nowTime);
 
             const allData = Object.assign({}, data.data[time ?? nowTime], data2.data[time ?? nowTime]);
 
@@ -60,7 +60,7 @@ client.on("messageCreate", async (message) => {
             });
         } else {
             if (restaurant === "전체") {
-                let data2 = await fetchMenu(dateStr, "r5", Number(isTomorrow));
+                let data2 = await fetchMenu(dateStr, "r5", Number(isTomorrow), nowTime);
 
                 msg += "r4:"
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
@@ -96,7 +96,6 @@ client.on("messageCreate", async (message) => {
             });
         }
     } catch (e) {
-        console.log(await fetchMenu(dateStr, restaurant, Number(isTomorrow)));
         await message.reply(`불러오기 실패: 시간이나 식당이 잘못되었거나 해당 날짜 ${(time ?? nowTime).toUpperCase()}에 식사가 없습니다.`);
     }
 });

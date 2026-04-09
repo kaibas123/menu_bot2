@@ -1,8 +1,9 @@
-async function fetchMenu(dateStr, rest, tom) {
+async function fetchMenu(dateStr, rest, tom, nowTime) {
     const url = new URL(process.env.API_URL);
     if (dateStr) url.searchParams.set("date", dateStr);
     if (rest) url.searchParams.set("restaurant", rest);
     if (tom) url.searchParams.set("tomorrow", tom);
+    if (nowTime) url.searchParams.set("nowTime", nowTime);
 
     const res = await fetch(url.toString(), {
         method: "GET",
