@@ -85,7 +85,7 @@ client.on("messageCreate", async (message) => {
                         });
                     });
                 });
-            } else if (restaurant.toLowerCase() === "to") {
+            } else if ((restaurant ?? "").toLowerCase() === "to") {
                 let data2 = await fetchMenu(dateStr, "r5", Number(isTomorrow), nowTime);
 
                 msg += "r4:"
@@ -123,17 +123,11 @@ client.on("messageCreate", async (message) => {
             const buffer = Buffer.from(msg, "utf-8");
 
             await message.reply({
-                content: (dateStr ? `${dateStr} ${nowTime} 메뉴` : `${isTomorrow ? "내일" : "오늘"} ${nowTime}${restaurant.toLowerCase() === "to" ? " T/O" : ""} 메뉴`),
+                content: (dateStr ? `${dateStr} ${nowTime} 메뉴` : `${isTomorrow ? "내일" : "오늘"} ${nowTime}${(restaurant ?? "").toLowerCase() === "to" ? " T/O" : ""} 메뉴`),
                 files: [{ attachment: buffer, name: `${time ?? nowTime}_menu.txt` }]
             });
         }
     } catch (e) {
-        const data = await fetchMenu(dateStr, restaurant, Number(isTomorrow), nowTime);
-        let msg = [];
-        Object.values(data.data[time ?? nowTime]).forEach(section => {
-            msg.push(section);
-        });
-        console.log(msg);
         await message.reply(`불러오기 실패: 시간이나 식당이 잘못되었거나 해당 날짜 ${(time ?? nowTime).toUpperCase()}에 식사가 없습니다.`);
     }
 });
