@@ -85,6 +85,30 @@ client.on("messageCreate", async (message) => {
                         });
                     });
                 });
+            } else if (restaurant.toLowerCase() === "to") {
+                let data2 = await fetchMenu(dateStr, "r5", Number(isTomorrow), nowTime);
+
+                msg += "r4:"
+                Object.values(data.data[time ?? nowTime]).forEach(section => {
+                    section.forEach(v => {
+                        if (!v.menuCourseName.includes("T/O")) return;
+                        v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
+                            if (!i) msg += `\n${v.menuCourseName} : `;
+                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                        });
+                    });
+                });
+
+                msg += "\nr5:";
+                Object.values(data2.data[time ?? nowTime]).forEach(section => {
+                    section.forEach(v => {
+                        if (!v.menuCourseName.includes("T/O")) return;
+                        v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
+                            if (!i) msg += `\n${v.menuCourseName} : `;
+                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                        });
+                    });
+                });
             } else {
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
                     section.forEach(v => {
