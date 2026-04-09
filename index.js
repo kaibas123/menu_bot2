@@ -34,22 +34,12 @@ client.on("messageCreate", async (message) => {
     let nowDate = koreaTime.toISOString().slice(0, 11);
 
     try {
-        let data = getMenu(nowDate, restaurant);
+        let data = await fetchMenu(dateStr, restaurant, Number(isTomorrow));;
         let msg = "";
-
-        if (!data) {
-            data = await fetchMenu(dateStr, restaurant, Number(isTomorrow));
-            addMenu(data);
-        }
 
         if (parts[0] === "메뉴추천") {
             let isR5 = restaurant && restaurant === 'r5';
-            let data2 = getMenu(nowDate, isR5 ? "r4" : "r5");
-
-            if (!data2) {
-                data2 = await fetchMenu(dateStr, isR5 ? "r4" : "r5" , Number(isTomorrow));
-                addMenu(data2);
-            }
+            let data2 = await fetchMenu(dateStr, isR5 ? "r4" : "r5" , Number(isTomorrow));
 
             const allData = Object.assign({}, data.data[time ?? nowTime], data2.data[time ?? nowTime]);
 
@@ -57,9 +47,9 @@ client.on("messageCreate", async (message) => {
             let random = ~~(Math.random() * rests.length);
             let recommended = allData[rests[random]];
 
-            recommended.forEach((v, i) => {
-                if (!i) msg += `${v.course_txt} : `;
-                msg += `${i ? "\t\t\t " : ""}${v.menu_name}\n`;
+            recommended.menuCourseName.split(/,\s|,/).forEach((v, i) => {
+                if (!i) msg += `\n${section.menuCourseName} : `;
+                msg += `${i ? "\t\t\t " : ""}${v}\n`;
             });
 
             const buffer = Buffer.from(msg, "utf-8");
@@ -70,35 +60,30 @@ client.on("messageCreate", async (message) => {
             });
         } else {
             if (restaurant === "전체") {
-                let data2 = getMenu(nowDate, "r5");
-
-                if (!data2) {
-                    data2 = await fetchMenu(dateStr, "r5", Number(isTomorrow));
-                    addMenu(data2);
-                }
+                let data2 = await fetchMenu(dateStr, "r5", Number(isTomorrow));
 
                 msg += "r4:"
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
-                    section.forEach((v, i) => {
-                        if (v.course_txt.includes("T/O")) return;
-                        if (!i) msg += `\n${v.course_txt} : `;
-                        msg += `${i ? "\t\t\t " : ""}${v.menu_name}\n`;
+                    section.subMenuTxt.split(/,\s|,/).forEach((v, i) => {
+                        if (v.menuCourseName.includes("T/O")) return;
+                        if (!i) msg += `\n${section.menuCourseName} : `;
+                        msg += `${i ? "\t\t\t " : ""}${v}\n`;
                     });
                 });
 
                 msg += "\nr5:";
                 Object.values(data2.data[time ?? nowTime]).forEach(section => {
-                    section.forEach((v, i) => {
-                        if (v.course_txt.includes("T/O")) return;
-                        if (!i) msg += `\n${v.course_txt} : `;
-                        msg += `${i ? "\t\t\t " : ""}${v.menu_name}\n`;
+                    section.subMenuTxt.split(/,\s|,/).forEach((v, i) => {
+                        if (v.menuCourseName.includes("T/O")) return;
+                        if (!i) msg += `\n${section.menuCourseName} : `;
+                        msg += `${i ? "\t\t\t " : ""}${v}\n`;
                     });
                 });
             } else {
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
-                    section.forEach((v, i) => {
-                        if (!i) msg += `\n${v.course_txt} : `;
-                        msg += `${i ? "\t\t\t " : ""}${v.menu_name}\n`;
+                    section.subMenuTxt.split(/,\s|,/).forEach((v, i) => {
+                        if (!i) msg += `\n${section.menuCourseName} : `;
+                        msg += `${i ? "\t\t\t " : ""}${v}\n`;
                     });
                 });
             }
@@ -117,20 +102,6 @@ client.on("messageCreate", async (message) => {
 
 client.once("clientReady", async () => {
     console.log(`Logged in as ${client.user.tag}`);
-
-    const now = new Date();
-    const koreaTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
-    let nowDate = koreaTime.toISOString().slice(0, 11);
-
-    let data = getMenu(nowDate, "r4");
-    let data2 = getMenu(nowDate, "r5");
-
-    if (!data) {
-        data = await fetchMenu(false, "r4", Number(false));
-        data2 = await fetchMenu(false, "r5", Number(false));
-        addMenu(data);
-        addMenu(data2);
-    }
 });
 
 client.login(process.env.DISCORD_TOKEN);
