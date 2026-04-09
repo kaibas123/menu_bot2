@@ -34,9 +34,8 @@ client.on("messageCreate", async (message) => {
     let nowDate = koreaTime.toISOString().slice(0, 11);
 
     try {
-        let data = await fetchMenu(dateStr, restaurant, Number(isTomorrow));;
+        let data = await fetchMenu(dateStr, restaurant, Number(isTomorrow));
         let msg = "";
-        console.log(data);
 
         if (parts[0] === "메뉴추천") {
             let isR5 = restaurant && restaurant === 'r5';
@@ -97,6 +96,7 @@ client.on("messageCreate", async (message) => {
             });
         }
     } catch (e) {
+        console.log(await fetchMenu(dateStr, restaurant, Number(isTomorrow)));
         await message.reply(`불러오기 실패: 시간이나 식당이 잘못되었거나 해당 날짜 ${(time ?? nowTime).toUpperCase()}에 식사가 없습니다.`);
     }
 });
