@@ -123,7 +123,7 @@ client.on("messageCreate", async (message) => {
             const buffer = Buffer.from(msg, "utf-8");
 
             await message.reply({
-                content: (dateStr ? `${dateStr} ${nowTime} 메뉴` : `${isTomorrow ? "내일" : "오늘"} ${nowTime} 메뉴`),
+                content: (dateStr ? `${dateStr} ${nowTime} 메뉴` : `${isTomorrow ? "내일" : "오늘"} ${nowTime}${restaurant.toLowerCase() === "to" ? " T/O" : ""} 메뉴`),
                 files: [{ attachment: buffer, name: `${time ?? nowTime}_menu.txt` }]
             });
         }
