@@ -36,6 +36,7 @@ client.on("messageCreate", async (message) => {
     try {
         let data = await fetchMenu(dateStr, restaurant, Number(isTomorrow));;
         let msg = "";
+        console.log(data);
 
         if (parts[0] === "메뉴추천") {
             let isR5 = restaurant && restaurant === 'r5';
