@@ -47,9 +47,11 @@ client.on("messageCreate", async (message) => {
             let random = ~~(Math.random() * rests.length);
             let recommended = allData[rests[random]];
 
-            recommended.menuCourseName.split(/,\s|,/).forEach((v, i) => {
-                if (!i) msg += `\n${section.menuCourseName} : `;
-                msg += `${i ? "\t\t\t " : ""}${v}\n`;
+            recommended.forEach((v, i) => {
+                v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
+                    if (!i) msg += `\n${v.menuCourseName} : `;
+                    msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                });
             });
 
             const buffer = Buffer.from(msg, "utf-8");
@@ -64,26 +66,32 @@ client.on("messageCreate", async (message) => {
 
                 msg += "r4:"
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
-                    section.subMenuTxt.split(/,\s|,/).forEach((v, i) => {
+                    section.forEach(v => {
                         if (v.menuCourseName.includes("T/O")) return;
-                        if (!i) msg += `\n${section.menuCourseName} : `;
-                        msg += `${i ? "\t\t\t " : ""}${v}\n`;
+                        v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
+                            if (!i) msg += `\n${v.menuCourseName} : `;
+                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                        });
                     });
                 });
 
                 msg += "\nr5:";
                 Object.values(data2.data[time ?? nowTime]).forEach(section => {
-                    section.subMenuTxt.split(/,\s|,/).forEach((v, i) => {
+                    section.forEach(v => {
                         if (v.menuCourseName.includes("T/O")) return;
-                        if (!i) msg += `\n${section.menuCourseName} : `;
-                        msg += `${i ? "\t\t\t " : ""}${v}\n`;
+                        v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
+                            if (!i) msg += `\n${v.menuCourseName} : `;
+                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                        });
                     });
                 });
             } else {
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
-                    section.subMenuTxt.split(/,\s|,/).forEach((v, i) => {
-                        if (!i) msg += `\n${section.menuCourseName} : `;
-                        msg += `${i ? "\t\t\t " : ""}${v}\n`;
+                    section.forEach(v => {
+                        v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
+                            if (!i) msg += `\n${v.menuCourseName} : `;
+                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                        });
                     });
                 });
             }
@@ -96,6 +104,12 @@ client.on("messageCreate", async (message) => {
             });
         }
     } catch (e) {
+        const data = await fetchMenu(dateStr, restaurant, Number(isTomorrow), nowTime);
+        let msg = [];
+        Object.values(data.data[time ?? nowTime]).forEach(section => {
+            msg.push(section);
+        });
+        console.log(msg);
         await message.reply(`불러오기 실패: 시간이나 식당이 잘못되었거나 해당 날짜 ${(time ?? nowTime).toUpperCase()}에 식사가 없습니다.`);
     }
 });
