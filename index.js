@@ -110,8 +110,21 @@ client.on("messageCreate", async (message) => {
                     });
                 });
             } else {
-                Object.values(data.data[time ?? nowTime]).forEach(section => {
+                let datas = Object.values(data.data[time ?? nowTime]);
+
+                datas.forEach(section => {
                     section.forEach(v => {
+                        if (v.menuCourseName.includes("T/O")) return;
+                        v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
+                            if (!i) msg += `\n${v.menuCourseName} : `;
+                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                        });
+                    });
+                });
+
+                datas.forEach(section => {
+                    section.forEach(v => {
+                        if (!v.menuCourseName.includes("T/O")) return;
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
                             if (!i) msg += `\n${v.menuCourseName} : `;
                             msg += `${i ? "\t\t\t " : ""}${va}\n`;
