@@ -28,7 +28,7 @@ client.on("messageCreate", async (message) => {
 
     const koreaTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
     const hour = koreaTime.getHours();
-    let nowTime = time ? time : hour >= 13 && !isTomorrow && !dateStr ? "석식" : "중식";
+    let nowTime = time ? time : (hour >= 13 && !isTomorrow && !dateStr ? "석식" : "중식");
 
     koreaTime.setDate(koreaTime.getDate() + Number(isTomorrow));
     let nowDate = koreaTime.toISOString().slice(0, 11);
@@ -68,9 +68,14 @@ client.on("messageCreate", async (message) => {
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
                     section.forEach(v => {
                         if (v.menuCourseName.includes("T/O")) return;
+
+                        let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
+
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                            if (!i) msg += `\n${v.menuCourseName} : `;
-                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                            let calorie = v.nutritionData.find(val => val.name === va).calorie;
+
+                            if (!i) msg += `\n${v.menuCourseName} : (kcal: ${allCal})\n`;
+                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} (kcal: ${calorie})\n`;
                         });
                     });
                 });
@@ -79,9 +84,14 @@ client.on("messageCreate", async (message) => {
                 Object.values(data2.data[time ?? nowTime]).forEach(section => {
                     section.forEach(v => {
                         if (v.menuCourseName.includes("T/O")) return;
+
+                        let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
+
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                            if (!i) msg += `\n${v.menuCourseName} : `;
-                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                            let calorie = v.nutritionData.find(val => val.name === va).calorie;
+
+                            if (!i) msg += `\n${v.menuCourseName} : (kcal: ${allCal})\n`;
+                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} (kcal: ${calorie})\n`;
                         });
                     });
                 });
@@ -115,9 +125,14 @@ client.on("messageCreate", async (message) => {
                 datas.forEach(section => {
                     section.forEach(v => {
                         if (v.menuCourseName.includes("T/O")) return;
+
+                        let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
+
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                            if (!i) msg += `\n${v.menuCourseName} : `;
-                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                            let calorie = v.nutritionData.find(val => val.name === va).calorie;
+
+                            if (!i) msg += `\n${v.menuCourseName} : (kcal: ${allCal})\n`;
+                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} (kcal: ${calorie})\n`;
                         });
                     });
                 });
@@ -126,13 +141,9 @@ client.on("messageCreate", async (message) => {
                     section.forEach(v => {
                         if (!v.menuCourseName.includes("T/O")) return;
 
-                        let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
-
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                            let calorie = v.nutritionData.find(val => val.name === va).calorie;
-
-                            if (!i) msg += `\n${v.menuCourseName} : (kcal: ${allCal})`;
-                            msg += `${i ? "\t\t\t " : ""}${va} (kcal: ${calorie})\n`;
+                            if (!i) msg += `\n${v.menuCourseName} :`;
+                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
                         });
                     });
                 });
