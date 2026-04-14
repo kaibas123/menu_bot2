@@ -125,9 +125,14 @@ client.on("messageCreate", async (message) => {
                 datas.forEach(section => {
                     section.forEach(v => {
                         if (!v.menuCourseName.includes("T/O")) return;
+
+                        let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
+
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                            if (!i) msg += `\n${v.menuCourseName} : `;
-                            msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                            let calorie = v.nutritionData.find(val => val.name === va).calorie;
+
+                            if (!i) msg += `\n${v.menuCourseName} : (kcal: ${allCal})`;
+                            msg += `${i ? "\t\t\t " : ""}${va} (kcal: ${calorie})\n`;
                         });
                     });
                 });
