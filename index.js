@@ -48,9 +48,13 @@ client.on("messageCreate", async (message) => {
             let recommended = allData[rests[random]];
 
             recommended.forEach((v, i) => {
+                let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
+
                 v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                    if (!i) msg += `\n${v.menuCourseName} : `;
-                    msg += `${i ? "\t\t\t " : ""}${va}\n`;
+                    let calorie = v.nutritionData.find(val => val.name === va)?.calorie;
+
+                    if (!i) msg += `\n${v.menuCourseName} : ${allCal ? `(kcal: ${allCal})` : ""}\n`;
+                    msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} ${calorie ? `(kcal: ${calorie})` : ""}\n`;
                 });
             });
 
@@ -67,15 +71,15 @@ client.on("messageCreate", async (message) => {
                 msg += "r4:"
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
                     section.forEach(v => {
-                        if (v.menuCourseName.includes("T/O")) return;
+                        if (v.menuCourseName.includes("T/O") || v.menuCourseName.includes("죽")) return;
 
                         let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
 
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                            let calorie = v.nutritionData.find(val => val.name === va).calorie;
+                            let calorie = v.nutritionData.find(val => val.name === va)?.calorie;
 
-                            if (!i) msg += `\n${v.menuCourseName} : (kcal: ${allCal})\n`;
-                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} (kcal: ${calorie})\n`;
+                            if (!i) msg += `\n${v.menuCourseName} : ${allCal ? `(kcal: ${allCal})` : ""}\n`;
+                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} ${calorie ? `(kcal: ${calorie})` : ""}\n`;
                         });
                     });
                 });
@@ -83,15 +87,15 @@ client.on("messageCreate", async (message) => {
                 msg += "\nr5:";
                 Object.values(data2.data[time ?? nowTime]).forEach(section => {
                     section.forEach(v => {
-                        if (v.menuCourseName.includes("T/O")) return;
+                        if (v.menuCourseName.includes("T/O") || v.menuCourseName.includes("죽")) return;
 
                         let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
 
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                            let calorie = v.nutritionData.find(val => val.name === va).calorie;
+                            let calorie = v.nutritionData.find(val => val.name === va)?.calorie;
 
-                            if (!i) msg += `\n${v.menuCourseName} : (kcal: ${allCal})\n`;
-                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} (kcal: ${calorie})\n`;
+                            if (!i) msg += `\n${v.menuCourseName} : ${allCal ? `(kcal: ${allCal})` : ""}\n`;
+                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} ${calorie ? `(kcal: ${calorie})` : ""}\n`;
                         });
                     });
                 });
@@ -101,7 +105,7 @@ client.on("messageCreate", async (message) => {
                 msg += "r4:"
                 Object.values(data.data[time ?? nowTime]).forEach(section => {
                     section.forEach(v => {
-                        if (!v.menuCourseName.includes("T/O")) return;
+                        if (!v.menuCourseName.includes("T/O") && !v.menuCourseName.includes("죽")) return;
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
                             if (!i) msg += `\n${v.menuCourseName} : `;
                             msg += `${i ? "\t\t\t " : ""}${va}\n`;
@@ -112,7 +116,7 @@ client.on("messageCreate", async (message) => {
                 msg += "\nr5:";
                 Object.values(data2.data[time ?? nowTime]).forEach(section => {
                     section.forEach(v => {
-                        if (!v.menuCourseName.includes("T/O")) return;
+                        if (!v.menuCourseName.includes("T/O") && !v.menuCourseName.includes("죽")) return;
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
                             if (!i) msg += `\n${v.menuCourseName} : `;
                             msg += `${i ? "\t\t\t " : ""}${va}\n`;
@@ -124,22 +128,22 @@ client.on("messageCreate", async (message) => {
 
                 datas.forEach(section => {
                     section.forEach(v => {
-                        if (v.menuCourseName.includes("T/O")) return;
+                        if (v.menuCourseName.includes("T/O") || v.menuCourseName.includes("죽")) return;
 
                         let allCal = v.nutritionData.reduce((acc, v) => acc + v.calorie, 0);
 
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
-                            let calorie = v.nutritionData.find(val => val.name === va).calorie;
+                            let calorie = v.nutritionData.find(val => val.name === va)?.calorie;
 
-                            if (!i) msg += `\n${v.menuCourseName} : (kcal: ${allCal})\n`;
-                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} (kcal: ${calorie})\n`;
+                            if (!i) msg += `\n${v.menuCourseName} : ${allCal ? `(kcal: ${allCal})` : ""}\n`;
+                            msg += `${` `.repeat(`${v.menuCourseName} : `.length + 3)}${va} ${calorie ? `(kcal: ${calorie})` : ""}\n`;
                         });
                     });
                 });
 
                 datas.forEach(section => {
                     section.forEach(v => {
-                        if (!v.menuCourseName.includes("T/O")) return;
+                        if (!v.menuCourseName.includes("T/O") && !v.menuCourseName.includes("죽")) return;
 
                         v.subMenuTxt.split(/,\s|,/).forEach((va, i) => {
                             if (!i) msg += `\n${v.menuCourseName} :`;
